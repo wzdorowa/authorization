@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "plugin:react/jsx-runtime"
+  ],
+  "rules": {
+    "react/require-default-props": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": [
+      "error",
+      {
+        "label": [
+          "radio",
+          "checkbox",
+          "toggle"
+        ]
+      }
+    ]
+  },
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  }
+}

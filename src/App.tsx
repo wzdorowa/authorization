@@ -5,11 +5,30 @@ import {
 import styled from 'styled-components';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
-import './App.css';
 
-const StyledHeader = styled.h1`
+const StyledApp = styled.div`
+height: 100vh;
+display: flex;
+flex-direction: column;
+`;
+
+const StyledHeader = styled.header`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+`;
+
+const StyledLink = {
+  textDecoration: 'none',
+};
+
+const StyledLogo = styled.h1`
 font-size: 64px;
+line-height: 78.14px;
 font-weight: 700;
+color: black;
+margin: 40px;
 `;
 
 function App() {
@@ -21,15 +40,15 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App__header">
+    <StyledApp className="App">
+      <StyledHeader>
         <Link
-          className="App__header-link"
+          style={StyledLink}
           to="/"
         >
-          <StyledHeader>ONLY.</StyledHeader>
+          <StyledLogo>ONLY.</StyledLogo>
         </Link>
-      </header>
+      </StyledHeader>
       {/* <Navigate to="/profile" /> */}
       {/* {!isAuth && (
         <Navigate to="/login" />
@@ -38,7 +57,7 @@ function App() {
         <Route path="/login" element={<Login handleChangeIsAuth={handleChangeIsAuth} />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
-    </div>
+    </StyledApp>
   );
 }
 

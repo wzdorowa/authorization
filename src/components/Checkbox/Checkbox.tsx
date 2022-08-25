@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 type PropsTypes = {
   name: string,
   isChecked: boolean,
   children: string,
+  onChange: (value: boolean) => void,
 };
 
 const StyledLabel = styled.label`
@@ -44,8 +45,18 @@ cursor: pointer;
 `;
 
 function Checkbox(props: PropsTypes) {
-  const { name, isChecked, children } = props;
+  const {
+    name,
+    isChecked,
+    children,
+    onChange,
+  } = props;
+
   const [checked, setChecked] = useState(isChecked);
+
+  useEffect(() => {
+    if (onChange) onChange(checked);
+  }, [checked]);
 
   const handleCheckboxChange = () => {
     setChecked(!checked);

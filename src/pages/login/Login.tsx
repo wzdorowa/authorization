@@ -2,6 +2,11 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Checkbox from '../../components/Checkbox/Checkbox';
+import userAuth from '../../api/UserVerification';
+
+type LoginType = {
+  handleChangeIsAuth: (value: boolean) => void
+};
 
 const StyledForm = styled.form`
 max-width: 640px;
@@ -42,6 +47,18 @@ color: #E26F6F;
 margin: 8px 0 20px 0;
 `;
 
+const StyledErrorDiv = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: center;
+width: 100%;
+height: 60px;
+background-color: #F5E9E9;
+border: 1px solid #E26F6F;
+border-radius: 8px;
+margin-bottom: 27px;
+`;
+
 const StyledButton = styled.button`
 height: 60px;
 width: 100%;
@@ -57,7 +74,8 @@ cursor: pointer;
 }
 `;
 
-function Login() {
+function Login(props: LoginType) {
+  const { handleChangeIsAuth } = props;
   const {
     register,
     formState: {
@@ -67,6 +85,7 @@ function Login() {
     setFocus,
   } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const [notValidUser, setNotValidUser] = useState<string | null>(null);
 
   useEffect(() => {
     if (errors?.password) {
@@ -79,9 +98,17 @@ function Login() {
 
   const onSubmit = (data: unknown) => {
     setIsLoading(true);
+    setNotValidUser(null);
     setTimeout(() => {
       console.log('data', JSON.stringify(data));
+      const user = userAuth.checkUser(JSON.stringify(data));
       setIsLoading(false);
+      if (user) {
+        handleChangeIsAuth(true);
+      }
+      if (!user) {
+        setNotValidUser(JSON.parse((JSON.stringify(data))).login);
+      }
     }, 2000);
   };
 
@@ -91,6 +118,17 @@ function Login() {
 
   return (
     <StyledForm className="form-login" onSubmit={handleSubmit(onSubmit)}>
+      {notValidUser && (
+      <StyledErrorDiv>
+        <p>
+          Пользователя
+          {' '}
+          {notValidUser}
+          {' '}
+          не существует
+        </p>
+      </StyledErrorDiv>
+      )}
       <StyledLabel>
         <span>Логин</span>
         {errors?.login && (

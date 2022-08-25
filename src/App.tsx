@@ -1,7 +1,13 @@
-import './App.css';
 import { Routes, Route, Link } from 'react-router-dom';
+import styled from 'styled-components';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
+import './App.css';
+
+const StyledHeader = styled.h1`
+font-size: 64px;
+font-weight: 700;
+`;
 
 function App() {
   return (
@@ -11,7 +17,7 @@ function App() {
           className="App__header-link"
           to="/"
         >
-          ONLY.
+          <StyledHeader>ONLY.</StyledHeader>
         </Link>
       </header>
       <Routes>

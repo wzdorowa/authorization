@@ -143,9 +143,7 @@ function Login() {
       {errors.login?.type === 'apiError' && (
       <StyledErrorDiv>
         <StyledErrorSign />
-        <p>
-          { errors.login.message }
-        </p>
+        <p>{ errors.login.message }</p>
       </StyledErrorDiv>
       )}
       <StyledLabel>

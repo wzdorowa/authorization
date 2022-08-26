@@ -29,11 +29,12 @@ class UserVerification {
 
   checkUser(userData: string) {
     const data: DataType = JSON.parse(userData);
-    if (data.isRemember) {
-      localStorage.setItem('login', data.login);
-    }
-    this.watchLogin$.next(data.login);
-    // this.watchLogin$.error(new Error('qweqwe asdasd qweqwe'));
+    console.log('data', data);
+    // if (data.isRemember) {
+    //   localStorage.setItem('login', data.login);
+    // }
+    // this.watchLogin$.next(data.login);
+    this.watchLogin$.error(new Error('qweqwe asdasd qweqwe'));
   }
 }
 

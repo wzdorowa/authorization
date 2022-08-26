@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/authorization/static/js/main.c042315c.js",
+    "index.html": "/authorization/index.html",
+    "main.c042315c.js.map": "/authorization/static/js/main.c042315c.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.c042315c.js"
+  ]
+}

@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import useStream from './api/useStream';
-import auth from './api/UserVerification';
+import auth from './api/Auth';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
 
@@ -35,9 +35,8 @@ margin: 40px;
 
 function App() {
   const navigate = useNavigate();
-  const stream$ = auth.getUserData();
-  const [user, error, isLoading] = useStream(useMemo(() => stream$, []), auth.getUserLogin());
-  console.log('user', user);
+  const stream$ = auth.getUser();
+  const [user] = useStream(useMemo(() => stream$, []));
 
   const goLogin = () => navigate('/login');
   const goProfile = () => navigate('/profile', { state: user });
@@ -62,7 +61,7 @@ function App() {
         </Link>
       </StyledHeader>
       <Routes>
-        <Route path="/login" element={<Login error={error} isLoading={isLoading} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </StyledApp>

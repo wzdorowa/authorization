@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
-import auth from '../../api/UserVerification';
+import auth from '../../api/Auth';
 
 const StyledContainer = styled.div`
 width: 100%;
@@ -48,7 +48,7 @@ function Profile() {
   const user = location.state;
 
   const onLogout = () => {
-    auth.cleanUserData();
+    auth.logout();
   };
 
   if (typeof user !== 'string') {

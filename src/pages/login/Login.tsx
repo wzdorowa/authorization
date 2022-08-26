@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import isObject from '../../api/isObject';
 import Checkbox from '../../components/Checkbox/Checkbox';
-import auth from '../../api/UserVerification';
+import auth from '../../api/Auth';
 
-type LoginProps = {
-  error: unknown,
-  isLoading: boolean
+type LoginData = {
+  login: string,
+  password: string,
+  isRemember: boolean,
 };
 
 const StyledForm = styled.form`
@@ -88,6 +89,7 @@ border: none;
 border-radius: 8px;
 background-color: #4A67FF;
 margin-top: 40px;
+color: white;
 cursor: pointer;
 
 :disabled {
@@ -96,76 +98,72 @@ cursor: pointer;
 }
 `;
 
-function Login(props: LoginProps) {
-  const { error, isLoading } = props;
+function Login() {
   const {
     register,
     formState: {
       errors,
+      isSubmitting,
     },
     handleSubmit,
     setFocus,
-  } = useForm();
-  const [login, setLogin] = useState<string>();
-  const [isRemember, setIsRemember] = useState<boolean>();
+    setError,
+  } = useForm<LoginData>();
+  const [isRemember, setIsRemember] = useState<boolean>(true);
+  register('isRemember', { value: true });
 
   useEffect(() => {
-    if (errors?.password) {
+    if (errors.login) {
+      setFocus('login');
+      return;
+    }
+    if (errors.password) {
       setFocus('password');
     }
-    if (errors?.login) {
-      setFocus('login');
-    }
-    if (isRemember !== undefined) {
-      register('isRemember', { value: isRemember });
-    }
-  }, [errors, isRemember]);
+  }, [errors]);
 
-  const onSubmit = (values: unknown) => {
-    auth.checkUser(JSON.stringify(values));
-    setLogin(JSON.parse(JSON.stringify(values)).login);
-  };
+  useEffect(() => {
+    register('isRemember', { value: isRemember });
+  }, [isRemember]);
 
-  const onChangeCheckbox = (checked: boolean) => {
-    setIsRemember(checked);
+  const onSubmit = async (values: LoginData) => {
+    try {
+      await auth.login(values);
+    } catch (error) {
+      if (isObject(error)) {
+        if ('message' in error && typeof error.message === 'string') {
+          setError('login', { type: 'apiError', message: error.message });
+        }
+      }
+    }
   };
 
   return (
     <StyledForm className="form-login" onSubmit={handleSubmit(onSubmit)}>
-      {isObject(error) && (
+      {errors.login?.type === 'apiError' && (
       <StyledErrorDiv>
         <StyledErrorSign />
         <p>
-          Пользователя
-          {' '}
-          {login}
-          {' '}
-          не существует
+          { errors.login.message }
         </p>
       </StyledErrorDiv>
       )}
       <StyledLabel>
         <span>Логин</span>
-        {errors?.login && (
-          <>
-            <StyledInput className="error" type="email" placeholder="email" {...register('login', { required: true })} />
-            <StyledErrorText>Обязательное поле</StyledErrorText>
-          </>
+        <StyledInput className={errors.login && errors.login?.type !== 'apiError' ? 'error' : undefined} type="email" placeholder="email" {...register('login', { required: true })} />
+        {errors.login && errors.login?.type !== 'apiError' && (
+          <StyledErrorText>Обязательное поле</StyledErrorText>
         )}
-        {errors?.login === undefined && <StyledInput type="email" placeholder="email" {...register('login', { required: true })} />}
       </StyledLabel>
       <StyledLabel>
         <span>Пароль</span>
-        {errors?.password && (
-          <>
-            <StyledInput className="error" type="password" placeholder="password" {...register('password', { required: true })} />
-            <StyledErrorText>Обязательное поле</StyledErrorText>
-          </>
+        <StyledInput className={errors.password ? 'error' : undefined} type="password" placeholder="password" {...register('password', { required: true })} />
+        {errors.password && (
+          <StyledErrorText>Обязательное поле</StyledErrorText>
         )}
-        {errors?.password === undefined && <StyledInput type="password" placeholder="password" {...register('password', { required: true })} />}
       </StyledLabel>
-      <Checkbox name="remember-password" onChange={onChangeCheckbox} isChecked>Запомнить пароль</Checkbox>
-      <StyledButton type="submit" disabled={isLoading}>Войти</StyledButton>
+      <Checkbox name="remember-password" onChange={setIsRemember} isChecked={isRemember}>Запомнить пароль</Checkbox>
+      <StyledButton type="submit" disabled={isSubmitting}>Войти</StyledButton>
     </StyledForm>
   );
 }

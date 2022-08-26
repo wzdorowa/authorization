@@ -18,7 +18,6 @@ class UserVerification {
   }
 
   cleanUserData() {
-    // console.log('this', this);
     localStorage.removeItem('login');
     this.watchLogin$.next(null);
   }
@@ -33,9 +32,8 @@ class UserVerification {
     if (data.isRemember) {
       localStorage.setItem('login', data.login);
     }
-    const user = data.login;
-    this.watchLogin$.next(user);
-    // return  this.watchLogin$.pipe(map(() => { throw new Error('qweqwe asdasd qweqwe')}));
+    this.watchLogin$.next(data.login);
+    // this.watchLogin$.error(new Error('qweqwe asdasd qweqwe'));
   }
 }
 

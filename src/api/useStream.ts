@@ -9,6 +9,7 @@ function useStream<Type>(stream$: Observable<Type>, defaultData: string | null) 
   useEffect(() => {
     const subscription = stream$.subscribe({
       next: (dataStream) => {
+        console.log('dataStream', dataStream);
         setLoading(true);
         setTimeout(() => {
           setData(dataStream);
@@ -16,6 +17,7 @@ function useStream<Type>(stream$: Observable<Type>, defaultData: string | null) 
         }, 2000);
       },
       error: (errorStream) => {
+        console.log('errorStream', errorStream);
         setError(errorStream);
       },
     });

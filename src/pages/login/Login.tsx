@@ -58,6 +58,7 @@ height: 60px;
 background-color: #F5E9E9;
 border: 1px solid #E26F6F;
 border-radius: 8px;
+padding-left: 20px;
 margin-bottom: 27px;
 `;
 

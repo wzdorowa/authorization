@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Routes, Route, Link, useNavigate,
 } from 'react-router-dom';
 import styled from 'styled-components';
+import useStream from './api/useStream';
 import auth from './api/UserVerification';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
@@ -34,28 +35,21 @@ margin: 40px;
 
 function App() {
   const navigate = useNavigate();
-  const stream$ = auth.getUser();
-  const user = auth.getUserLogin();
-  const [authLogin, setAuthLogin] = useState<string>();
+  const stream$ = auth.getUserData();
+  const [user, error, isLoading] = useStream(useMemo(() => stream$, []), auth.getUserLogin());
+  console.log('user', user);
 
   const goLogin = () => navigate('/login');
-  const goProfile = () => navigate('/profile', { state: authLogin });
-
-  const handleChangeIsAuth = (value: string) => {
-    setAuthLogin(value);
-  };
+  const goProfile = () => navigate('/profile', { state: user });
 
   useEffect(() => {
     if (user) {
-      setAuthLogin(user);
-    }
-    if (authLogin) {
       goProfile();
     }
-    if (!authLogin) {
+    if (!user) {
       goLogin();
     }
-  }, [authLogin, user]);
+  }, [user]);
 
   return (
     <StyledApp className="App">
@@ -68,7 +62,7 @@ function App() {
         </Link>
       </StyledHeader>
       <Routes>
-        <Route path="/login" element={<Login stream$={stream$} handleChangeIsAuth={handleChangeIsAuth} />} />
+        <Route path="/login" element={<Login error={error} isLoading={isLoading} />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </StyledApp>

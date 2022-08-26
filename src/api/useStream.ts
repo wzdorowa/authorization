@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Observable } from 'rxjs';
 
-function useStream<Type>(stream$: Observable<Type>) {
-  const [data, setData] = useState<Type>();
+function useStream<Type>(stream$: Observable<Type>, defaultData: string | null) {
+  const [data, setData] = useState<Type | string | null>(defaultData);
   const [error, setError] = useState<unknown>();
   const [isLoading, setLoading] = useState(false);
 
@@ -24,7 +24,7 @@ function useStream<Type>(stream$: Observable<Type>) {
     };
   }, [stream$]);
 
-  const result: [Type | undefined, unknown, boolean] = [data, error, isLoading];
+  const result: [Type | string | null, unknown, boolean] = [data, error, isLoading];
   return result;
 }
 

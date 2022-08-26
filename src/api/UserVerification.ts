@@ -7,30 +7,35 @@ type DataType = {
 };
 
 class UserVerification {
-  private watchList$: ReplaySubject<unknown>;
+  private watchLogin$: ReplaySubject<unknown>;
 
   constructor() {
-    this.watchList$ = new ReplaySubject(1);
+    this.watchLogin$ = new ReplaySubject(1);
   }
 
-  getUser() {
-    return this.watchList$;
+  getUserData() {
+    return this.watchLogin$;
+  }
+
+  cleanUserData() {
+    // console.log('this', this);
+    localStorage.removeItem('login');
+    this.watchLogin$.next(null);
   }
 
   getUserLogin() {
-    console.log('login', this, localStorage, localStorage.getItem('login'));
+    console.log('login', this);
     return localStorage.getItem('login');
   }
 
   checkUser(userData: string) {
     const data: DataType = JSON.parse(userData);
-    console.log('data', data);
     if (data.isRemember) {
       localStorage.setItem('login', data.login);
     }
     const user = data.login;
-    this.watchList$.next(user);
-    // return  this.watchList$.pipe(map(() => { throw new Error('qweqwe asdasd qweqwe')}));
+    this.watchLogin$.next(user);
+    // return  this.watchLogin$.pipe(map(() => { throw new Error('qweqwe asdasd qweqwe')}));
   }
 }
 

@@ -1,15 +1,13 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState, useMemo } from 'react';
-import { Observable, ReplaySubject } from 'rxjs';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import useStream from '../../api/useStream';
 import isObject from '../../api/isObject';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import auth from '../../api/UserVerification';
 
-type LoginType = {
-  stream$: ReplaySubject<unknown> | Observable<number>,
-  handleChangeIsAuth: (value: string) => void
+type LoginProps = {
+  error: unknown,
+  isLoading: boolean
 };
 
 const StyledForm = styled.form`
@@ -78,8 +76,8 @@ cursor: pointer;
 }
 `;
 
-function Login(props: LoginType) {
-  const { stream$, handleChangeIsAuth } = props;
+function Login(props: LoginProps) {
+  const { error, isLoading } = props;
   const {
     register,
     formState: {
@@ -88,8 +86,8 @@ function Login(props: LoginType) {
     handleSubmit,
     setFocus,
   } = useForm();
-  const [user, error, isLoading] = useStream(useMemo(() => stream$, []));
   const [login, setLogin] = useState<string>();
+  const [isRemember, setIsRemember] = useState<boolean>();
 
   useEffect(() => {
     if (errors?.password) {
@@ -98,20 +96,19 @@ function Login(props: LoginType) {
     if (errors?.login) {
       setFocus('login');
     }
-  }, [errors]);
+    if (isRemember !== undefined) {
+      register('isRemember', { value: isRemember });
+    }
+  }, [errors, isRemember]);
 
   const onSubmit = (values: unknown) => {
     auth.checkUser(JSON.stringify(values));
     setLogin(JSON.parse(JSON.stringify(values)).login);
   };
 
-  const onChangeCheckbox = (value: boolean) => {
-    register('isRemember', { value });
+  const onChangeCheckbox = (checked: boolean) => {
+    setIsRemember(checked);
   };
-
-  if (typeof user === 'string') {
-    handleChangeIsAuth(user);
-  }
 
   return (
     <StyledForm className="form-login" onSubmit={handleSubmit(onSubmit)}>

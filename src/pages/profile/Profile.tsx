@@ -1,5 +1,6 @@
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
+import auth from '../../api/UserVerification';
 
 const StyledContainer = styled.div`
 width: 100%;
@@ -40,9 +41,20 @@ cursor: pointer;
 `;
 
 function Profile() {
+  const navigate = useNavigate();
+  const goLogin = () => navigate('/login');
+
   const location = useLocation();
   const user = location.state;
-  console.log(useLocation());
+
+  const onLogout = () => {
+    auth.cleanUserData();
+  };
+
+  if (typeof user !== 'string') {
+    goLogin();
+  }
+
   return (
     <StyledContainer>
       <StyledTextContainer>
@@ -51,7 +63,7 @@ function Profile() {
         </StyledText>
         <StyledTextBold>{typeof user === 'string' && user}</StyledTextBold>
       </StyledTextContainer>
-      <StyledButton>Выйти</StyledButton>
+      <StyledButton onClick={onLogout}>Выйти</StyledButton>
     </StyledContainer>
   );
 }

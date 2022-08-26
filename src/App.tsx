@@ -33,6 +33,12 @@ color: black;
 margin: 40px;
 `;
 
+const StyledWrapper = styled.div`
+display: flex;
+align-items: center;
+flex-grow: 1;
+`;
+
 function App() {
   const navigate = useNavigate();
   const stream$ = auth.getUser();
@@ -60,10 +66,12 @@ function App() {
           <StyledLogo>ONLY.</StyledLogo>
         </Link>
       </StyledHeader>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
+      <StyledWrapper>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </StyledWrapper>
     </StyledApp>
   );
 }

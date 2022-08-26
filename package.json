@@ -20,6 +20,7 @@
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
+  "homepage": "https://wzdorowa.github.io/authorization",
   "devDependencies": {
     "@types/react": "^18.0.17",
     "@types/styled-components": "^5.1.26",
@@ -37,9 +38,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://wzdorowa.github.io/authorization/",
   "eslintConfig": {
     "extends": [
       "react-app",

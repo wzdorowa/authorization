@@ -14,7 +14,7 @@ type LoginData = {
 const StyledForm = styled.form`
 max-width: 640px;
 width: 90%;
-min-height: 365px;
+min-height: 335px;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
@@ -29,6 +29,7 @@ border: none;
 border-radius: 8px;
 margin-top: 10px;
 padding: 20px;
+color: #232323;
 
 &.error {
   border: 1px solid #E26F6F;
@@ -48,7 +49,7 @@ margin-bottom: 20px;
 const StyledErrorText = styled.p`
 font-size: 14px;
 color: #E26F6F;
-margin: 8px 0 20px 0;
+margin: 8px 0 0 0;
 `;
 
 const StyledErrorDiv = styled.div`
@@ -89,6 +90,8 @@ border: none;
 border-radius: 8px;
 background-color: #4A67FF;
 margin-top: 40px;
+font-size: 18px;
+font-weight: 700;
 color: white;
 cursor: pointer;
 
@@ -102,8 +105,7 @@ function Login() {
   const {
     register,
     formState: {
-      errors,
-      isSubmitting,
+      errors, isSubmitting,
     },
     handleSubmit,
     setFocus,

@@ -1,11 +1,15 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { Observable, ReplaySubject } from 'rxjs';
 import styled from 'styled-components';
+import useStream from '../../api/useStream';
+import isObject from '../../api/isObject';
 import Checkbox from '../../components/Checkbox/Checkbox';
-import userAuth from '../../api/UserVerification';
+import auth from '../../api/UserVerification';
 
 type LoginType = {
-  handleChangeIsAuth: (value: boolean) => void
+  stream$: ReplaySubject<unknown> | Observable<number>,
+  handleChangeIsAuth: (value: string) => void
 };
 
 const StyledForm = styled.form`
@@ -75,7 +79,7 @@ cursor: pointer;
 `;
 
 function Login(props: LoginType) {
-  const { handleChangeIsAuth } = props;
+  const { stream$, handleChangeIsAuth } = props;
   const {
     register,
     formState: {
@@ -84,8 +88,8 @@ function Login(props: LoginType) {
     handleSubmit,
     setFocus,
   } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
-  const [notValidUser, setNotValidUser] = useState<string | null>(null);
+  const [user, error, isLoading] = useStream(useMemo(() => stream$, []));
+  const [login, setLogin] = useState<string>();
 
   useEffect(() => {
     if (errors?.password) {
@@ -96,34 +100,27 @@ function Login(props: LoginType) {
     }
   }, [errors]);
 
-  const onSubmit = (data: unknown) => {
-    setIsLoading(true);
-    setNotValidUser(null);
-    setTimeout(() => {
-      console.log('data', JSON.stringify(data));
-      const user = userAuth.checkUser(JSON.stringify(data));
-      setIsLoading(false);
-      if (user) {
-        handleChangeIsAuth(true);
-      }
-      if (!user) {
-        setNotValidUser(JSON.parse((JSON.stringify(data))).login);
-      }
-    }, 2000);
+  const onSubmit = (values: unknown) => {
+    auth.checkUser(JSON.stringify(values));
+    setLogin(JSON.parse(JSON.stringify(values)).login);
   };
 
   const onChangeCheckbox = (value: boolean) => {
-    register('checkbox', { value });
+    register('isRemember', { value });
   };
+
+  if (typeof user === 'string') {
+    handleChangeIsAuth(user);
+  }
 
   return (
     <StyledForm className="form-login" onSubmit={handleSubmit(onSubmit)}>
-      {notValidUser && (
+      {isObject(error) && (
       <StyledErrorDiv>
         <p>
           Пользователя
           {' '}
-          {notValidUser}
+          {login}
           {' '}
           не существует
         </p>

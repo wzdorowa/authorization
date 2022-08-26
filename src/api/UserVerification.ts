@@ -13,16 +13,26 @@ class UserVerification {
     this.watchList$ = new ReplaySubject(1);
   }
 
-  checkUser(userData: string): string | null {
+  getUser() {
+    return this.watchList$;
+  }
+
+  getUserLogin() {
+    console.log('login', this, localStorage, localStorage.getItem('login'));
+    return localStorage.getItem('login');
+  }
+
+  checkUser(userData: string) {
     const data: DataType = JSON.parse(userData);
+    console.log('data', data);
     if (data.isRemember) {
-      localStorage.setItem(data.login, data.password);
+      localStorage.setItem('login', data.login);
     }
     const user = data.login;
     this.watchList$.next(user);
-    return user;
+    // return  this.watchList$.pipe(map(() => { throw new Error('qweqwe asdasd qweqwe')}));
   }
 }
 
-const userAuth = new UserVerification();
-export default userAuth;
+const auth = new UserVerification();
+export default auth;

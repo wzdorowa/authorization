@@ -1,8 +1,9 @@
-// import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Routes, Route, Link,
+  Routes, Route, Link, useNavigate,
 } from 'react-router-dom';
 import styled from 'styled-components';
+import auth from './api/UserVerification';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
 
@@ -32,12 +33,29 @@ margin: 40px;
 `;
 
 function App() {
-  // const [isAuth, setIsAuth] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const stream$ = auth.getUser();
+  const user = auth.getUserLogin();
+  const [authLogin, setAuthLogin] = useState<string>();
 
-  const handleChangeIsAuth = (value: boolean) => {
-    console.log('value', value);
-    // setIsAuth(value);
+  const goLogin = () => navigate('/login');
+  const goProfile = () => navigate('/profile', { state: authLogin });
+
+  const handleChangeIsAuth = (value: string) => {
+    setAuthLogin(value);
   };
+
+  useEffect(() => {
+    if (user) {
+      setAuthLogin(user);
+    }
+    if (authLogin) {
+      goProfile();
+    }
+    if (!authLogin) {
+      goLogin();
+    }
+  }, [authLogin, user]);
 
   return (
     <StyledApp className="App">
@@ -49,12 +67,8 @@ function App() {
           <StyledLogo>ONLY.</StyledLogo>
         </Link>
       </StyledHeader>
-      {/* <Navigate to="/profile" /> */}
-      {/* {!isAuth && (
-        <Navigate to="/login" />
-      )} */}
       <Routes>
-        <Route path="/login" element={<Login handleChangeIsAuth={handleChangeIsAuth} />} />
+        <Route path="/login" element={<Login stream$={stream$} handleChangeIsAuth={handleChangeIsAuth} />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </StyledApp>

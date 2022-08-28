@@ -1,4 +1,4 @@
-import { ReplaySubject, delay } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 type LoginData = {
   login: string,
@@ -25,7 +25,9 @@ class Auth {
   }
 
   async login(data: LoginData) {
-    await delay(2000);
+    await new Promise((resolve) => {
+      setTimeout(() => resolve('done!'), 2000);
+    });
     if (data.login !== 'steve.jobs@example.com') {
       throw new Error(`Пользователь ${data.login} не существует`);
     }

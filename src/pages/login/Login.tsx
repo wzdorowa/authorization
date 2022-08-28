@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import isObject from '../../api/isObject';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import auth from '../../api/Auth';
+import Error from '../../components/Error/Error';
+import InputWrapper from '../../components/InputWrapper/InputWrapper';
 
 type LoginData = {
   login: string,
@@ -36,50 +38,6 @@ color: #232323;
   &:focus {
     outline: #E26F6F;
   }
-}
-`;
-
-const StyledLabel = styled.label`
-display: flex;
-flex-direction: column;
-align-items: start;
-margin-bottom: 20px;
-`;
-
-const StyledErrorText = styled.p`
-font-size: 14px;
-color: #E26F6F;
-margin: 8px 0 0 0;
-`;
-
-const StyledErrorDiv = styled.div`
-display: flex;
-justify-content: flex-start;
-align-items: center;
-width: 100%;
-height: 60px;
-background-color: #F5E9E9;
-border: 1px solid #E26F6F;
-border-radius: 8px;
-padding-left: 20px;
-margin-bottom: 27px;
-`;
-
-const StyledErrorSign = styled.span`
-display: inline-block;
-width: 20px;
-height: 20px;
-margin-right: 14px;
-&::before {
-  content: '!';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  color: #EE6565;
-  background-color: #FFC8C8;
-  border-radius: 50%;
 }
 `;
 
@@ -143,25 +101,20 @@ function Login() {
   return (
     <StyledForm className="form-login" onSubmit={handleSubmit(onSubmit)}>
       {errors.login?.type === 'apiError' && (
-      <StyledErrorDiv>
-        <StyledErrorSign />
-        <p>{ errors.login.message }</p>
-      </StyledErrorDiv>
+        <Error message={errors.login.message} />
       )}
-      <StyledLabel>
-        <span>Логин</span>
+      <InputWrapper
+        title="Логин"
+        isError={errors.login !== undefined && errors.login?.type !== 'apiError'}
+      >
         <StyledInput className={errors.login && errors.login?.type !== 'apiError' ? 'error' : undefined} type="email" placeholder="email" {...register('login', { required: true })} />
-        {errors.login && errors.login?.type !== 'apiError' && (
-          <StyledErrorText>Обязательное поле</StyledErrorText>
-        )}
-      </StyledLabel>
-      <StyledLabel>
-        <span>Пароль</span>
+      </InputWrapper>
+      <InputWrapper
+        title="Пароль"
+        isError={errors.password !== undefined}
+      >
         <StyledInput className={errors.password ? 'error' : undefined} type="password" placeholder="password" {...register('password', { required: true })} />
-        {errors.password && (
-          <StyledErrorText>Обязательное поле</StyledErrorText>
-        )}
-      </StyledLabel>
+      </InputWrapper>
       <Checkbox name="remember-password" onChange={setIsRemember} isChecked={isRemember}>Запомнить пароль</Checkbox>
       <StyledButton type="submit" disabled={isSubmitting}>Войти</StyledButton>
     </StyledForm>

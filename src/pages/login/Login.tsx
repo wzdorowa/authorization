@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import isObject from '../../api/isObject';
 import Checkbox from '../../components/Checkbox/Checkbox';
@@ -68,9 +68,9 @@ function Login() {
     handleSubmit,
     setFocus,
     setError,
+    setValue,
   } = useForm<LoginData>();
-  const [isRemember, setIsRemember] = useState<boolean>(true);
-  register('isRemember', { value: true });
+  register('isRemember');
 
   useEffect(() => {
     if (errors.login) {
@@ -82,9 +82,9 @@ function Login() {
     }
   }, [errors]);
 
-  useEffect(() => {
-    register('isRemember', { value: isRemember });
-  }, [isRemember]);
+  const onChangeCheckbox = (checked: boolean) => {
+    setValue('isRemember', checked);
+  };
 
   const onSubmit = async (values: LoginData) => {
     try {
@@ -115,7 +115,7 @@ function Login() {
       >
         <StyledInput className={errors.password ? 'error' : undefined} type="password" placeholder="password" {...register('password', { required: true })} />
       </InputWrapper>
-      <Checkbox name="remember-password" onChange={setIsRemember} isChecked={isRemember}>Запомнить пароль</Checkbox>
+      <Checkbox name="remember-password" onChange={onChangeCheckbox} isChecked>Запомнить пароль</Checkbox>
       <StyledButton type="submit" disabled={isSubmitting}>Войти</StyledButton>
     </StyledForm>
   );

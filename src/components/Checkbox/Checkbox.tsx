@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 type PropsTypes = {
@@ -51,15 +52,20 @@ function Checkbox(props: PropsTypes) {
     children,
     onChange,
   } = props;
+  const [checked, setChecked] = useState(isChecked);
+
+  useEffect(() => {
+    onChange(checked);
+  }, [checked]);
 
   const handleCheckboxChange = () => {
-    onChange(!isChecked);
+    setChecked(!isChecked);
   };
 
   return (
     <div>
       <StyledLabel>
-        <StyledInput type="checkbox" name={name} checked={isChecked} onChange={handleCheckboxChange} />
+        <StyledInput type="checkbox" name={name} checked={checked} onChange={handleCheckboxChange} />
         <StyledIndicator className="indicator" />
         <StyledValue>{children}</StyledValue>
       </StyledLabel>
